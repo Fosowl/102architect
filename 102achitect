@@ -1,0 +1,118 @@
+#!/bin/python3
+
+import sys
+import math
+
+class at:
+	value1 = 0
+	value2 = 0
+	x = 0
+	y = 0
+	matrix = [1, 0, 0,
+	 		  0, 1, 0,
+	 		  0, 0, 1]
+
+	def scale(self):
+		print("Scaling by factors", self.value1, "and", self.value2)
+		self.matrix[0] = self.matrix[0] * self.value1
+		self.matrix[4] = self.matrix[4] * self.value2
+		self.x = self.x * self.value1
+		self.y = self.y * self.value2
+		return 0
+
+	def rotate(self):
+		print("Rotation by a", self.value1, "degree angle")
+		self.matrix[0] = math.cos(math.radians(self.value1))
+		self.matrix[1] = math.sin(math.radians(self.value1)) * -1
+		self.matrix[3] = math.sin(math.radians(self.value1))
+		self.matrix[4] = math.cos(math.radians(self.value1))
+		self.x = (math.cos(math.radians(self.value1)) * self.x) - (math.sin(math.radians(self.value1)) * self.y)
+		self.x = (math.sin(math.radians(self.value1)) * self.x) - (math.cos(math.radians(self.value1)) * self.y)
+		return 0
+
+	def translate(self):
+		print("Translation along vector (", end='')
+		print(self.value1, end=", ")
+		print(self.value2, end='')
+		print(")")
+		self.matrix[2] = self.matrix[2] + self.value1
+		self.matrix[5] = self.matrix[5] + self.value2
+		self.x = self.x + self.value1
+		self.y = self.y + self.value2
+		return 0
+
+	def reflect(self):
+		print("Reflection over an axis with an inclination angle of"
+		, self.value1, "degrees")
+		self.matrix[0] = math.cos(math.radians(self.value1) * 2)
+		self.matrix[1] = math.sin(math.radians(self.value1) * 2)
+		self.matrix[3] = math.sin(math.radians(self.value1) * 2)
+		self.matrix[4] = math.cos(math.radians(self.value1) * 2) * -1
+		self.x = math.cos(math.radians(self.value1) * 2) * self.x + math.sin(2 * math.radians(self.value1)) * self.y
+		self.y = math.sin(math.radians(self.value1) * 2) * self.x - math.cos(2 * math.radians(self.value1)) * self.y
+		return 0
+
+def print_result(at):
+	for x in range(0, 7, 3):
+		print(format(at.matrix[x], '.2f')
+		, "\t", format(at.matrix[x + 1], '.2f'), "\t", format(at.matrix[x + 2], '.2f'))
+	print("(", end='')
+	print(format(at.old_x, '.2f'), end=", ")
+	print(format(at.old_y, '.2f'), end='')
+	print(") =>", end=' ')
+	print("(", end='')
+	print(format(at.x, '.2f'), end=", ")
+	print(format(at.y, '.2f'), end='')
+	print(")")
+	format(at.matrix[x + 2], '.2f')
+	return 0
+
+if len(sys.argv) > 1 and sys.argv[1] == "-h":
+	print("USAGE")
+	print("./102architect x y transfo1 arg11 [arg12] [transfo2 arg12 [arg22]] ...\n")
+	print("DESCRIPTION")
+	print("\tx\tabscissa of the original point")
+	print("\ty\tordinate of the original point\n")
+	print("transfo arg1 [arg2]")
+	print("-t i j\ttranslation along vector (i, j)")
+	print("-z m n\tscaling by factors m (x-axis) and n (y-axis)")
+	print("-r d\trotation centered in O by a d degree angle")
+	print("-s d reflection over the axis passing through O with an inclination")
+	print("\t\tangle of d degrees")
+	exit (0)
+
+
+if len(sys.argv) < 4:
+	print("please put some arguments")
+	exit (84)
+
+try:
+	at.x = int(sys.argv[1])
+	at.y = int(sys.argv[2])
+except:
+	print("not a number ! use -h for help")
+	exit (84)
+
+at.old_x = at.x
+at.old_y = at.y
+
+for x in range(2, len(sys.argv)):
+	if sys.argv[x - 2] == "-t":
+		at.translate(at)
+	elif sys.argv[x - 2] == "-z":
+		at.scale(at)
+	elif sys.argv[x - 1] == "-r":
+		at.rotate(at)
+	elif sys.argv[x - 1] == "-s":
+		at.reflect(at)
+	if sys.argv[x] in ['-t', '-z', '-r', '-s']:
+		try:
+			at.value1 = int(sys.argv[x + 1])
+			if sys.argv[x] in ["-t", "-z"]:
+				at.value2 = int(sys.argv[x + 2])
+		except:
+			print("value not integrer or missing!")
+			exit (84)
+
+print_result(at)
+	
