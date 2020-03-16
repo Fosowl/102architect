@@ -38,10 +38,10 @@ are the transformations to be implemented:**
   
   transfo arg1 [arg2]
   
-    **-t i j** translation along vector (i, j)
+   **-t i j** translation along vector (i, j)
     
    **-z m n** scaling by factors m (x-axis) and n (y-axis)
    
-    **-r d** rotation centered in O by a d degree angle
+   **-r d** rotation centered in O by a d degree angle
     
    **-s d** reflection over the axis passing through O with an inclination angle of d degrees
